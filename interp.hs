@@ -18,7 +18,8 @@ subst (App m n) l (Var y) = App (subst m l (Var y)) (subst n l (Var y))
 -- Application case for beta reduction
 appRedex :: Expr -> Expr -> Expr
 appRedex (Lam x m) n = normalize (subst m n (Var x))
-appRedex m n = App (normalize m) (normalize n)
+appRedex (Var x) n = App (Var x) (normalize n)
+appRedex m n = normalize (App (normalize m) (normalize n))
 
 -- Normalize the term
 normalize :: Expr -> Expr
@@ -31,3 +32,4 @@ ex1 = Lam 'x' (App (Var 'a') (Var 'x'))
 ex2 = Lam 'y' (App (Var 'b') (Var 'y'))
 ex3 = App ex2 (Var 'c')
 ex4 = App ex1 ex3
+ex5 = App (App (Lam 'x' (Var 'x')) (Lam 'y' (Var 'y'))) (Var 'z')
